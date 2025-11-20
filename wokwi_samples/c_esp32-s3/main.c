@@ -27,7 +27,9 @@ void app_main() {
   struct lcd1602a_pins pinout = {
     14, 13, 12, 11, 10, 9, 46, 3, 8, 18, 17, 16, 15, 7
   };
-  struct lcd1602a_lcd lcd = {&esp32_gpio_set, &esp32_gpio_read, &esp32_gpio_setup, &esp32_delay_ms, &pinout};
+  struct lcd1602a_lcd lcd = {
+    &esp32_gpio_set, &esp32_gpio_read, &esp32_gpio_setup, &esp32_delay_ms, &pinout
+  };
 
   lcd1602a_init(&lcd);
   lcd1602a_print(&lcd, "Hello World!");
