@@ -1,20 +1,33 @@
-# Drivers for 1602A LCD display (in non-I2C mode)
 
-This repository contains easy to use, abstracted 1602A LCD drivers (16x2 without I2C support).
+# 1602A (16x2) LCD — Drivers (non-I2C)
 
-Currently the driver is available only in C, but there are plans to also implement
-it in C++, Python, Rust and Go.
+Clean, hardware-agnostic drivers for the popular 1602A 16x2 character LCD (parallel
+mode, not I2C). The driver is designed so it can be
+adapted easily to different MCUs by providing a few thin GPIO/delay wrappers.
 
-## Usage
+Highlights
+- Hardware-agnostic C driver for 1602A (4-bit / 8-bit parallel modes)
+- Easy to adapt to any microcontroller by supplying GPIO and delay callbacks
+- Example projects and Wokwi samples included for quick testing
 
-The driver aims to be "hardware-agnostic". Meaning, it's not tied to one particular
-device, but should be easy to use on pretty much any board. You just need to provide
-methods for setting/reading pins and delaying execution with millisecond precision.
-Some boards may also require some additional setup before you can use GPIO pins, so
-there is also a method for that. But you can leave that one empty if it's not
-applicable.
+Usage
+-----
 
-The code below shows how to use the C driver with the ESP32 S3 board.
+The driver expects a small platform layer to be provided by the user:
+- a function to set GPIO output level
+- a function to read GPIO input level (optional for busy-wait)
+- a small delay function with millisecond granularity
+- an optional GPIO setup/init function
+
+These allow the core driver to remain portable — it never depends on a specific
+HAL or SDK.
+
+ESP32-S3 example
+-----------------
+
+Below is a minimal example showing how to adapt the driver for the ESP32-S3
+API. Supply these wrapper functions and then create the `lcd` instance with
+your pin mapping.
 
 ```c
 #include "lcd1602a.h"
@@ -51,16 +64,36 @@ void app_main() {
 }
 ```
 
-For reference attaching screenshot from the Wokwi simulator showing how the LCD
-has been connected to the board.
+Wiring / pin mapping
+---------------------
+
+The exact pin order depends on how the `struct lcd1602a_pins` is defined in
+`lcd1602a.h`.
+
+For a quick reference image showing an example connection in Wokwi see:
+
 ![](esp32_s3.png)
 
-## Wokwi Samples
+Wokwi samples
+-------------
 
-`wokwi_samples` directory contains code samples that you can use to quickly
-test out the driver. In order to do that simply navigate to [Wokwi's website](https://wokwi.com) and create a new project. Then simply copy the files, they contain the driver, Wokwi definition and runner code.
+The `wokwi_samples` directory contains ready-to-run examples you can copy into
+Wokwi (https://wokwi.com) to try the driver in simulation. Copy the files from
+`wokwi_samples/c_esp32-s3/` for the ESP32-S3 sample.
 
-## Resources
+Resources
+---------
 
-1602A LCD Datasheet: https://www.openhacks.com/uploadsproductos/eone-1602a1.pdf
+- 1602A LCD Datasheet: https://www.openhacks.com/uploadsproductos/eone-1602a1.pdf
+
+Contributing
+------------
+
+Contributions are welcome. If you add ports for other languages or boards,
+please open a PR and add a short example to `wokwi_samples` if possible.
+
+License
+-------
+
+This repository is provided under the terms in the `LICENSE` file.
 
