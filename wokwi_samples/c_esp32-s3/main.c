@@ -31,7 +31,11 @@ void app_main() {
     &esp32_gpio_set, &esp32_gpio_read, &esp32_gpio_setup, &esp32_delay_ms, &pinout
   };
 
-  lcd1602a_init(&lcd);
+  lcd1602a_init(
+    &lcd,
+    LCD1602A_OP_8_BIT | LCD1602A_OP_2_LINE | LCD1602A_OP_5_8_FONT,
+    LCD1602A_CURSOR_OP_ON
+  );
   lcd1602a_print(&lcd, "Hello World!");
 
   while (true) {
